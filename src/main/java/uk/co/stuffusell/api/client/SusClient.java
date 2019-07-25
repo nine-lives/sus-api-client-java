@@ -7,18 +7,21 @@ import uk.co.stuffusell.api.client.client.HttpClient;
 import uk.co.stuffusell.api.client.client.RequestContext;
 import uk.co.stuffusell.api.common.BookCourierRequest;
 import uk.co.stuffusell.api.common.CustomerDto;
-import uk.co.stuffusell.api.common.CustomerLedgerEntryDto;
 import uk.co.stuffusell.api.common.CustomerOrderDto;
 import uk.co.stuffusell.api.common.CustomerOrderUpdateRequest;
 import uk.co.stuffusell.api.common.CustomerUpdateRequest;
 import uk.co.stuffusell.api.common.DateListDto;
+import uk.co.stuffusell.api.common.InvoiceDto;
+import uk.co.stuffusell.api.common.LedgerDto;
 import uk.co.stuffusell.api.common.ListingReportDto;
 import uk.co.stuffusell.api.common.LoginResponse;
 import uk.co.stuffusell.api.common.PackagingRequestDto;
 import uk.co.stuffusell.api.common.PackagingType;
+import uk.co.stuffusell.api.common.PageDto;
 import uk.co.stuffusell.api.common.PasswordResetRequest;
 import uk.co.stuffusell.api.common.PasswordResetRequestRequest;
 import uk.co.stuffusell.api.common.PricingChangedResponse;
+import uk.co.stuffusell.api.common.PricingDto;
 import uk.co.stuffusell.api.common.RegistrationRequest;
 import uk.co.stuffusell.api.common.RegistrationResponse;
 import uk.co.stuffusell.api.common.SalesTickerResponse;
@@ -131,6 +134,18 @@ public final class SusClient {
                     "/api/customer/current",
                     Collections.emptyMap(),
                     CustomerDto.class);
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public PricingDto pricing(String authToken) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/customer/pricing",
+                    Collections.emptyMap(),
+                    PricingDto.class);
         } finally {
             RequestContext.clear();
         }
@@ -288,14 +303,38 @@ public final class SusClient {
         }
     }
 
-    public List<CustomerLedgerEntryDto> getAccountLedger(String authToken) {
+    public LedgerDto getAccountLedger(String authToken) {
         RequestContext.get().setAuthToken(authToken);
         try {
             return client.get(
                     "/api/customer/ledger",
                     Collections.emptyMap(),
-                    new TypeReference<List<CustomerLedgerEntryDto>>() {
+                    LedgerDto.class);
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public PageDto<InvoiceDto> getInvoices(String authToken, int page, int pageSize) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/customer/invoices",
+                    ImmutableMap.of("page", String.valueOf(page), "pageSize", String.valueOf(pageSize)),
+                    new TypeReference<PageDto<InvoiceDto>>() {
                     });
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public LedgerDto getInvoice(String authToken, String invoiceNumber) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/customer/invoice/" + invoiceNumber,
+                    Collections.emptyMap(),
+                    LedgerDto.class);
         } finally {
             RequestContext.clear();
         }
