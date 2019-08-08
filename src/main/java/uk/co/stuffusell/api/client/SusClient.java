@@ -25,6 +25,7 @@ import uk.co.stuffusell.api.common.PricingDto;
 import uk.co.stuffusell.api.common.RegistrationRequest;
 import uk.co.stuffusell.api.common.RegistrationResponse;
 import uk.co.stuffusell.api.common.SalesTickerResponse;
+import uk.co.stuffusell.api.common.StockReportSummaryDto;
 import uk.co.stuffusell.api.common.SuccessResponse;
 import uk.co.stuffusell.api.common.UserNameAvailableResponse;
 
@@ -298,6 +299,30 @@ public final class SusClient {
                     Collections.emptyMap(),
                     new TypeReference<List<ListingReportDto>>() {
                     });
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public StockReportSummaryDto getStockReportSummary(String authToken) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/stock/summary",
+                    Collections.emptyMap(),
+                    StockReportSummaryDto.class);
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public ListingReportDto getStockData(String authToken, String sku) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/sku/" + sku,
+                    Collections.emptyMap(),
+                    ListingReportDto.class);
         } finally {
             RequestContext.clear();
         }
