@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 public class HttpClient {
@@ -116,11 +117,11 @@ public class HttpClient {
 
     private <T extends HttpEntityEnclosingRequest> T setPayload(T request, Object payload) {
         try {
-            StringEntity entity = new StringEntity(objectMapper.writeValueAsString(payload));
-            entity.setContentType("application/json");
+            StringEntity entity = new StringEntity(objectMapper.writeValueAsString(payload), Charset.forName("UTF-8"));
+            entity.setContentType("application/json; charset=utf-8");
             request.setEntity(entity);
             return request;
-        } catch (JsonProcessingException | UnsupportedEncodingException e) {
+        } catch (JsonProcessingException e) {
             throw new SusException(e);
         }
     }
