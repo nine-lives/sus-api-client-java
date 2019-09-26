@@ -100,7 +100,7 @@ public class HttpClient {
 
         String authToken = RequestContext.get().getAuthToken();
         if (authToken != null && !authToken.isEmpty()) {
-            request.addHeader(HEADER_AUTH, "Basic " + authToken);
+            request.addHeader(HEADER_AUTH, authToken);
         }
         request.addHeader(HEADER_ACCESS_TOKEN, configuration.getAccessToken());
         request.addHeader(HEADER_USER_AGENT, configuration.getUserAgent());

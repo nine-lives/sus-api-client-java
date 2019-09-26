@@ -4,7 +4,7 @@ import uk.co.stuffusell.api.common.*
 
 class OrdersIntegrationSpec extends BaseIntegrationSpec {
 
-    def "I can fetch orders adn the order"() {
+    def "I can fetch orders and the order"() {
         given:
         LoginResponse login = registerAndLogin()
 
@@ -127,6 +127,37 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
         then:
         me.primaryEmail == "rnd." + login.getCustomerDto().getPrimaryEmail()
         me.primaryTelephone == '07879440890'
+    }
+
+    def "I can update the inventory list"() {
+        given:
+        LoginResponse login = registerAndLogin()
+        CustomerOrderDto order = client.orders(login.authToken).get(0);
+        CustomerOrderUpdateRequest request = new CustomerOrderUpdateRequest()
+            .withItems([new CustomerItemDto().withCustomerDescription("My Item 1 RRP £123").withCustomerQuantity(2).withCustomerEstimate(40.0G),
+                        new CustomerItemDto().withCustomerDescription("My Item 2").withCustomerQuantity(3),
+                        new CustomerItemDto().withCustomerDescription("My Item 3")]);
+
+        when:
+        SuccessResponse response = client.updateOrder(login.getAuthToken(), order.orderId, request)
+
+        then:
+        response.success
+
+        when:
+        order = client.getOrder(login.authToken, order.orderId)
+
+        then:
+        order.items.size() == 3
+        order.items[0].customerDescription == 'My Item 1 RRP £123'
+        order.items[0].customerQuantity == 2
+        order.items[0].customerEstimate == 40.0G
+        order.items[1].customerDescription == 'My Item 2'
+        order.items[1].customerQuantity == 3
+        order.items[1].customerEstimate == null
+        order.items[2].customerDescription == 'My Item 3'
+        order.items[2].customerQuantity == 1
+        order.items[2].customerEstimate == null
     }
 
     def "I can check if the customer pricing has changed"() {

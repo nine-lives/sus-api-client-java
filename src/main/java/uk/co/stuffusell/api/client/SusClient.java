@@ -14,6 +14,7 @@ import uk.co.stuffusell.api.common.DateListDto;
 import uk.co.stuffusell.api.common.InvoiceDto;
 import uk.co.stuffusell.api.common.LedgerDto;
 import uk.co.stuffusell.api.common.ListingReportDto;
+import uk.co.stuffusell.api.common.LoginRequest;
 import uk.co.stuffusell.api.common.LoginResponse;
 import uk.co.stuffusell.api.common.PackagingRequestDto;
 import uk.co.stuffusell.api.common.PackagingType;
@@ -85,13 +86,12 @@ public final class SusClient {
                 SuccessResponse.class);
     }
 
-    public CustomerDto passwordReset(PasswordResetRequest request) {
+    public LoginResponse passwordReset(PasswordResetRequest request) {
         return client.post(
                 "/api/customer/password-reset",
                 request,
-                CustomerDto.class);
+                LoginResponse.class);
     }
-
 
     public SalesTickerResponse salesTicker() {
         return client.get(
@@ -116,13 +116,23 @@ public final class SusClient {
     }
 
     public LoginResponse login(String username, String password) {
-        String authToken = authToken(username, password);
+        try {
+            return client.post(
+                    "/api/customer/login",
+                    new LoginRequest(username, password),
+                    LoginResponse.class);
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public void logout(String authToken) {
         RequestContext.get().setAuthToken(authToken);
         try {
-            return new LoginResponse(authToken, client.get(
-                    "/api/customer/login",
+            client.get(
+                    "/api/customer/logout",
                     Collections.emptyMap(),
-                    CustomerDto.class));
+                    SuccessResponse.class);
         } finally {
             RequestContext.clear();
         }
@@ -155,14 +165,10 @@ public final class SusClient {
     public LoginResponse update(String authToken, CustomerUpdateRequest request) {
         RequestContext.get().setAuthToken(authToken);
         try {
-            CustomerDto customerDto = client.post(
+            return client.post(
                     "/api/customer/update",
                     request,
-                    CustomerDto.class);
-            String newAuthToken = authToken(
-                    customerDto.getPrimaryEmail(),
-                    request.getNewPassword() != null && !request.getNewPassword().isEmpty() ? request.getNewPassword() : request.getCurrentPassword());
-            return new LoginResponse(newAuthToken, customerDto);
+                    LoginResponse.class);
         } finally {
             RequestContext.clear();
         }
