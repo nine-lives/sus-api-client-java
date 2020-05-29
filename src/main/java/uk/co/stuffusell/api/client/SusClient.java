@@ -2,7 +2,6 @@ package uk.co.stuffusell.api.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.codec.binary.Base64;
 import uk.co.stuffusell.api.client.client.HttpClient;
 import uk.co.stuffusell.api.client.client.RequestContext;
 import uk.co.stuffusell.api.common.BookCourierRequest;
@@ -26,9 +25,12 @@ import uk.co.stuffusell.api.common.PricingDto;
 import uk.co.stuffusell.api.common.RegistrationRequest;
 import uk.co.stuffusell.api.common.RegistrationResponse;
 import uk.co.stuffusell.api.common.SalesTickerResponse;
+import uk.co.stuffusell.api.common.StockItemDto;
 import uk.co.stuffusell.api.common.StockReportSummaryDto;
 import uk.co.stuffusell.api.common.SuccessResponse;
 import uk.co.stuffusell.api.common.UserNameAvailableResponse;
+import uk.co.stuffusell.api.common.consignment.ConsignmentDto;
+import uk.co.stuffusell.api.common.consignment.ConsignmentsDto;
 
 import java.util.Collections;
 import java.util.List;
@@ -334,6 +336,19 @@ public final class SusClient {
         }
     }
 
+    public PageDto<StockItemDto> getStock(String authToken, int page, int pageSize) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/stock/list",
+                    ImmutableMap.of("page", String.valueOf(page), "pageSize", String.valueOf(pageSize)),
+                    new TypeReference<PageDto<StockItemDto>>() {
+                    });
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
     public LedgerDto getAccountLedger(String authToken) {
         RequestContext.get().setAuthToken(authToken);
         try {
@@ -371,8 +386,27 @@ public final class SusClient {
         }
     }
 
-    private String authToken(String username, String password) {
-        String input = String.format("%s:%s", username, password);
-        return Base64.encodeBase64String(input.getBytes());
+    public ConsignmentsDto getConsignments(String authToken) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/consignment/overview",
+                    Collections.emptyMap(),
+                    ConsignmentsDto.class);
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
+    public ConsignmentDto getConsignment(String authToken, String consignmentId) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/consignment/" + consignmentId,
+                    Collections.emptyMap(),
+                    ConsignmentDto.class);
+        } finally {
+            RequestContext.clear();
+        }
     }
 }

@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.9ls:sus-api-common:1.0.6'
+    compile 'com.9ls:sus-api-common:1.0.9'
     compile 'joda-time:joda-time:2.10'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.6'

@@ -30,7 +30,6 @@ import uk.co.stuffusell.api.client.util.RequestParameterMapper;
 import uk.co.stuffusell.api.common.ErrorResponse;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -38,6 +37,8 @@ import java.util.Map;
 
 public class HttpClient {
     private static final String HEADER_ACCESS_TOKEN = "X-Access-Token";
+    private static final String HEADER_REMOTE_IP = "X-Remote-IP";
+    private static final String HEADER_REMOTE_UA = "X-Remote-UA";
     private static final String HEADER_AUTH = HttpHeaders.AUTHORIZATION;
     private static final String HEADER_USER_AGENT = "User-Agent";
     private static final int TIMEOUT_MILLIS = -1;
@@ -101,6 +102,14 @@ public class HttpClient {
         String authToken = RequestContext.get().getAuthToken();
         if (authToken != null && !authToken.isEmpty()) {
             request.addHeader(HEADER_AUTH, authToken);
+        }
+        String ipAddress = RequestContext.get().getIpAddress();
+        if (ipAddress != null && !ipAddress.isEmpty()) {
+            request.addHeader(HEADER_REMOTE_IP, ipAddress);
+        }
+        String userAgent = RequestContext.get().getUserAgent();
+        if (userAgent != null && !userAgent.isEmpty()) {
+            request.addHeader(HEADER_REMOTE_UA, userAgent);
         }
         request.addHeader(HEADER_ACCESS_TOKEN, configuration.getAccessToken());
         request.addHeader(HEADER_USER_AGENT, configuration.getUserAgent());
