@@ -2,7 +2,6 @@ package uk.co.stuffusell.api.client.util;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import java.io.IOException;
@@ -24,8 +23,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class RequestParameterMapper {
-    private static final PropertyNamingStrategies.SnakeCaseStrategy STRATEGY =
-            new PropertyNamingStrategies.SnakeCaseStrategy();
+    private static final PropertyNamingStrategy.SnakeCaseStrategy STRATEGY =
+            new PropertyNamingStrategy.SnakeCaseStrategy();
 
     private final ObjectMapper objectMapper = ObjectMapperFactory.make();
 
