@@ -386,6 +386,18 @@ public final class SusClient {
         }
     }
 
+    public LedgerDto getUninvoiced(String authToken) {
+        RequestContext.get().setAuthToken(authToken);
+        try {
+            return client.get(
+                    "/api/customer/ledger/uninvoiced",
+                    Collections.emptyMap(),
+                    LedgerDto.class);
+        } finally {
+            RequestContext.clear();
+        }
+    }
+
     public ConsignmentsDto getConsignments(String authToken) {
         RequestContext.get().setAuthToken(authToken);
         try {

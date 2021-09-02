@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +23,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class RequestParameterMapper {
-    private static PropertyNamingStrategy.SnakeCaseStrategy strategy =
+    private final static PropertyNamingStrategy.SnakeCaseStrategy STRATEGY =
             new PropertyNamingStrategy.SnakeCaseStrategy();
 
     private final ObjectMapper objectMapper = ObjectMapperFactory.make();
@@ -39,10 +40,10 @@ public class RequestParameterMapper {
                 if (value instanceof Collection) {
                     Collection collection = (Collection) value;
                     if (!collection.isEmpty()) {
-                        values.put(strategy.translate(field.getName()), toString(collection));
+                        values.put(STRATEGY.translate(field.getName()), toString(collection));
                     }
                 } else {
-                    values.put(strategy.translate(field.getName()), String.valueOf(value));
+                    values.put(STRATEGY.translate(field.getName()), String.valueOf(value));
                 }
             }
             return values;
@@ -67,19 +68,15 @@ public class RequestParameterMapper {
     }
 
     public String write(Map<String, String> params) {
-        try {
-            StringBuilder paramString = new StringBuilder();
-            for (Entry<String, String> entry : params.entrySet()) {
-                paramString
-                        .append(paramString.length() == 0 ? '?' : '&')
-                        .append(URLEncoder.encode(entry.getKey(), "UTF-8"))
-                        .append('=')
-                        .append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-            }
-            return paramString.toString();
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
+        StringBuilder paramString = new StringBuilder();
+        for (Entry<String, String> entry : params.entrySet()) {
+            paramString
+                    .append(paramString.length() == 0 ? '?' : '&')
+                    .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8))
+                    .append('=')
+                    .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
         }
+        return paramString.toString();
     }
 
     public <T> T read(URL url, Class<T> type) {
@@ -107,8 +104,8 @@ public class RequestParameterMapper {
         String[] pairs = query.split("&");
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
-            String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
-            String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
+            String key = URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8);
+            String value = URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8);
             if (key.endsWith("[]")) {
                 key = key.substring(0, key.length() - 2);
                 Set<String> set = (Set<String>) queryPairs.get(key);

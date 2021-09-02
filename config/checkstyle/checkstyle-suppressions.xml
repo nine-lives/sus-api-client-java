@@ -3,5 +3,6 @@
 <suppressions>
     <!-- relax rules in unit tests -->
     <suppress checks="FileLength_Error|AvoidStaticImport|ClassFanOutComplexity|ClassDataAbstractionCoupling|IllegalInstantiation|IllegalThrows|MagicNumber|MethodCount|ParameterNumber" files=".*Test.java"/>
-    <suppress checks="ClassDataAbstractionCoupling" files="HttpClient.java"/>
+    <suppress checks="ClassDataAbstractionCoupling|MethodCount" files="HttpClient.java"/>
+    <suppress checks="MethodCount|FileLength" files="SusClient.java"/>
 </suppressions>
