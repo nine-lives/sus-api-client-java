@@ -19,7 +19,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         then:
         response.customerDto.fullName == 'John Doe'
         response.customerDto.primaryEmail == email
-        response.customerDto.primaryTelephone == '07879440895'
+        response.customerDto.primaryTelephone == '07879 440895'
 
         when:
         CustomerDto me = client.current(response.authToken)
@@ -27,7 +27,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         then:
         me.fullName == 'John Doe'
         me.primaryEmail == email
-        me.primaryTelephone == '07879440895'
+        me.primaryTelephone == '07879 440895'
     }
 
     def "I can update the user without changing credentials"() {
@@ -56,7 +56,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         response.customerDto.payeeName == 'Tony Underwood'
         response.customerDto.fullName == 'Rory Underwood'
         response.customerDto.primaryEmail == login.getCustomerDto().getPrimaryEmail()
-        response.customerDto.primaryTelephone == '07879440890'
+        response.customerDto.primaryTelephone == '07879 440890'
         response.customerDto.address1 == 'Bedford Blues'
         response.customerDto.address2 == 'Goldington Road'
         response.customerDto.city == 'Bedford'
@@ -88,7 +88,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         LoginResponse response = client.update(login.authToken, request);
 
         then:
-        response.customerDto.primaryTelephone == '07879440890'
+        response.customerDto.primaryTelephone == '07879 440890'
 
         when:
         client.current(login.authToken)
@@ -101,7 +101,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         CustomerDto me = client.current(response.authToken)
 
         then:
-        me.primaryTelephone == '07879440890'
+        me.primaryTelephone == '07879 440890'
     }
 
     def "I can update the user and change email and password"() {
@@ -117,7 +117,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         LoginResponse response = client.update(login.authToken, request);
 
         then:
-        response.customerDto.primaryTelephone == '07879440890'
+        response.customerDto.primaryTelephone == '07879 440890'
 
         when:
         client.current(login.authToken)
@@ -131,7 +131,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
 
         then:
         me.primaryEmail == "rnd." + login.getCustomerDto().getPrimaryEmail()
-        me.primaryTelephone == '07879440890'
+        me.primaryTelephone == '07879 440890'
     }
 
     def "I can check if the customer pricing has changed"() {
@@ -150,7 +150,7 @@ class CustomerIntegrationSpec extends BaseIntegrationSpec {
         LoginResponse login = registerAndLogin()
 
         when:
-        CustomerOrderDto order = client.newOrder(login.getAuthToken())
+        CustomerOrderDto order = client.newOrder(login.getAuthToken(), true, "127.0.0.1")
 
         then:
         order.orderId ==~ /\d{5}-001/

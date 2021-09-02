@@ -15,7 +15,7 @@ abstract class BaseIntegrationSpec extends Specification {
         ObjectMapperFactory.setFailOnUnknownProperties(true)
         client = SusClient.make(new Configuration()
                 .withBlockTillRateLimitReset(false)
-                .withEndpoint(System.getProperty("susEndpoint") ?: System.getenv("susEndpoint") ?: "https://quim-stage.stuffusell.co.uk")
+                .withEndpoint(System.getProperty("susEndpoint") ?: System.getenv("susEndpoint") ?: "http://localhost:8080")
                 .withAccessToken(System.getProperty("susAccessToken") ?: System.getenv("susAccessToken")))
     }
 

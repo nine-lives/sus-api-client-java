@@ -9,12 +9,12 @@ project.ext {
     library_baseName = 'sus-api-client'
 
     jacoco_limits = [
-            'instruction': 0.1,
-            'branch'     : 0,
-            'line'       : 0,
-            'complexity' : 0,
-            'method'     : 0,
-            'class'      : 2
+            'instruction': 50,
+            'branch'     : 34,
+            'line'       : 50,
+            'complexity' : 45,
+            'method'     : 57,
+            'class'      : 65
     ]
 
     jacoco_codecy = true

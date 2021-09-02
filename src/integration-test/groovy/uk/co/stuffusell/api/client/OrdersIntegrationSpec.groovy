@@ -51,7 +51,7 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
         response.customerDto.payeeName == 'Tony Underwood'
         response.customerDto.fullName == 'Rory Underwood'
         response.customerDto.primaryEmail == login.getCustomerDto().getPrimaryEmail()
-        response.customerDto.primaryTelephone == '07879440890'
+        response.customerDto.primaryTelephone == '07879 440890'
         response.customerDto.address1 == 'Bedford Blues'
         response.customerDto.address2 == 'Goldington Road'
         response.customerDto.city == 'Bedford'
@@ -83,7 +83,7 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
         LoginResponse response = client.update(login.authToken, request);
 
         then:
-        response.customerDto.primaryTelephone == '07879440890'
+        response.customerDto.primaryTelephone == '07879 440890'
 
         when:
         client.current(login.authToken)
@@ -96,7 +96,7 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
         CustomerDto me = client.current(response.authToken)
 
         then:
-        me.primaryTelephone == '07879440890'
+        me.primaryTelephone == '07879 440890'
     }
 
     def "I can update the user and change email and password"() {
@@ -112,7 +112,7 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
         LoginResponse response = client.update(login.authToken, request);
 
         then:
-        response.customerDto.primaryTelephone == '07879440890'
+        response.customerDto.primaryTelephone == '07879 440890'
 
         when:
         client.current(login.authToken)
@@ -126,7 +126,7 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
 
         then:
         me.primaryEmail == "rnd." + login.getCustomerDto().getPrimaryEmail()
-        me.primaryTelephone == '07879440890'
+        me.primaryTelephone == '07879 440890'
     }
 
     def "I can update the inventory list"() {
@@ -176,7 +176,7 @@ class OrdersIntegrationSpec extends BaseIntegrationSpec {
         LoginResponse login = registerAndLogin()
 
         when:
-        CustomerOrderDto order = client.newOrder(login.getAuthToken())
+        CustomerOrderDto order = client.newOrder(login.getAuthToken(), true, "127.0.0.1")
 
         then:
         order.orderId ==~ /\d{5}-001/
